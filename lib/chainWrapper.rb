@@ -1,0 +1,79 @@
+require 'net/http'
+require "awesome_print"
+require "mrkv"
+require "json"
+require "uri"
+
+class ChainWrapper
+
+  ### override
+  class Mrkv::Chain
+    attr_accessor :chain
+    attr_accessor :starters
+  end
+
+  ### non-negative integer
+  attr_accessor :ngram
+  
+  ### ignore input lines containing these words (e.g. hashtags, twitter mentions, gutenberg, ebook, etc.)
+  attr_accessor :exclusions
+  
+  def initialize ngram=2
+    @mrkvInst = Mrkv::Chain.new(ngram) # ngram defaults to 2
+    @exclusions = '(?!)'  # default to "doesn't match anything"
+  end
+  
+  ### insert source text into internal chain using current ngram setting
+  def addSource res
+    lines = []
+    if /\A#{URI::regexp(['http', 'https'])}\z/ =~ res #assume webpage
+      uri = URI(res)
+      @source = Net::HTTP.get(uri.host,uri.path)
+      @source.split(/[^a-zA-Z0-9\.\!\?\s]/).each do |line|
+        lines << line unless /#{@exclusions}/i =~ line
+      end
+      @mrkvInst.add lines
+    else #assume file source
+      File.foreach(res) {|x| lines << x}
+      @mrkvInst.add(lines)
+    end
+  end
+  
+  ### write internal chain structure to JSON file
+  def dumpChain filename
+    File.open(filename,"w") do |f|
+      f.write(@mrkvInst.chain.to_json)
+    end
+  end
+  
+  ### read from JSON file into internal chain structure
+  def loadChain filename
+    @mrkvInst.chain = JSON.parse(File.read(filename))
+    @mrkvInst.starters = @mrkvInst.chain.keys.select{|k| k =~ /^[A-Z]/}
+  end
+  
+  ### reset internal chain structure 
+  def clearChain
+    @mrkvInst.chain = {}
+    @mrkvInst.starters = {}
+  end
+
+#  def addExclusion singleLine
+#  end
+#
+#  def dumpExclusions filename
+#  end
+
+  def loadExclusions filename
+    @exclusions = []
+    File.foreach(filename) {|x| @exclusions << x.chomp}
+    @exclusions = @exclusions.join("|") #readify for an "or" regexp
+  end
+
+#  def clearExclusions
+#  end
+
+  def generate
+    @mrkvInst.generate
+  end
+end
