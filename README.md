@@ -1,7 +1,7 @@
 # chain-wrapper
 Simple wrapper around MRKV.  (Please report bugs and feature requests.)
 
-Run jane_austen.rb within the example directory to mangle Pride & Prejudice.
+Run jane_austen.rb within the example directory to mangle Austen's complete works.
 
 Feel free to add to dat/sayings.dat.
 
