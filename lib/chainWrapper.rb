@@ -97,7 +97,7 @@ class ChainWrapper
 
   ### reset internal starters
   def clearStarters
-    @mrkvInst.chain = {}
+    @mrkvInst.starters = {}
   end
 
 
