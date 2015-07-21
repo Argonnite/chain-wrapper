@@ -20,6 +20,7 @@ require "mrkv"
 require "json"
 require "uri"
 
+
 class ChainWrapper
 
   ### override
@@ -51,28 +52,54 @@ class ChainWrapper
       @mrkvInst.add lines
     else #assume file source
       File.foreach(res) {|x| lines << x}
-      @mrkvInst.add(lines)
+      @mrkvInst.add lines
     end
   end
   
   ### write internal chain structure to JSON file
   def dumpChain filename
     File.open(filename,"w") do |f|
-      f.write(@mrkvInst.chain.to_json)
+      if DEBUG
+        f.puts JSON.pretty_generate(@mrkvInst.chain)
+      else
+        f.write(@mrkvInst.chain.to_json)
+      end
+      f.close
     end
   end
   
   ### read from JSON file into internal chain structure
   def loadChain filename
     @mrkvInst.chain = JSON.parse(File.read(filename))
-    @mrkvInst.starters = @mrkvInst.chain.keys.select{|k| k =~ /^[A-Z]/}
   end
   
   ### reset internal chain structure 
   def clearChain
     @mrkvInst.chain = {}
-    @mrkvInst.starters = {}
   end
+
+  ### write internal starters structure to JSON file
+  def dumpStarters filename
+    File.open(filename,"w") do |f|
+      if DEBUG
+        f.puts(JSON.pretty_generate(@mrkvInst.starters))
+      else
+        f.write(@mrkvInst.starters.to_json)
+      end
+      f.close
+    end
+  end
+  
+  ### load starters from JSON
+  def loadStarters filename
+    @mrkvInst.starters = JSON.parse(File.read(filename))
+  end
+
+  ### reset internal starters
+  def clearStarters
+    @mrkvInst.chain = {}
+  end
+
 
 #  def addExclusion singleLine
 #  end
