@@ -14,7 +14,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'net/http'
+require "net/http"
 require "awesome_print"
 require "mrkv"
 require "json"
@@ -52,6 +52,7 @@ class ChainWrapper
       @mrkvInst.add lines
     else #assume file source
       File.foreach(res) {|x| lines << x}
+#TODO: skip "bad" chars
       @mrkvInst.add lines
     end
   end
