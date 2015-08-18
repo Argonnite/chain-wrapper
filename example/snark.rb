@@ -1,9 +1,10 @@
+require "awesome_print"
 require_relative '../lib/chainWrapper.rb'
 
 ### debugging using a smaller chain; that Austen sure is verbose
 
-#DEBUG=true
-DEBUG=false
+DEBUG=true
+#DEBUG=false
 
 chainObj = ChainWrapper.new(1)
 
