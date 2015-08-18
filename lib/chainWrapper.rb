@@ -22,11 +22,22 @@ require "uri"
 
 
 class ChainWrapper
+  attr_accessor :mrkvInst
 
-  ### override
+  ### overrides
   class Mrkv::Chain
     attr_accessor :chain
     attr_accessor :starters
+    def add lines
+      lines.each do |line|
+        line.split.each_cons(@ngram + 1) do |link|
+          next if link.nil?
+          @chain[link.take(@ngram).join(" ")] << link.last
+        end
+      end
+      @starters = @chain.keys.select{|k| k =~ /^[A-Z]/}
+      true
+    end
   end
 
   ### non-negative integer
@@ -51,7 +62,7 @@ class ChainWrapper
       end
       @mrkvInst.add lines
     else #assume file source
-      File.foreach(res) {|x| lines << x}
+      File.foreach(res) { |x| lines << x }
 #TODO: skip "bad" chars
       @mrkvInst.add lines
     end
@@ -60,11 +71,11 @@ class ChainWrapper
   ### write internal chain structure to JSON file
   def dumpChain filename
     File.open(filename,"w") do |f|
-      if DEBUG
-        f.puts JSON.pretty_generate(@mrkvInst.chain)
-      else
+#      if DEBUG
+#        f.puts JSON.pretty_generate(@mrkvInst.chain)
+#      else
         f.write(@mrkvInst.chain.to_json)
-      end
+#      end
       f.close
     end
   end
