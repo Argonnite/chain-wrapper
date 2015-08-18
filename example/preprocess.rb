@@ -1,5 +1,5 @@
 #Usage: ruby preprocess.rb infile.txt outfile.txt
-
+#Example: ruby preprocess.rb ../dat/austen_complete.txt ../dat/preprocessed_austen.txt
 
 lines = []
 File.foreach(ARGV[0]) do |x|
