@@ -1,11 +1,14 @@
 require_relative '../lib/chainWrapper.rb'
+require "awesome_print"
 
 #DEBUG=true
 DEBUG=false
 
 chainObj = ChainWrapper.new(3)
 chainObj.loadExclusions '../dat/exclusions.dat'
-chainObj.addSource 'http://www.gutenberg.org/cache/epub/1342/pg1342.txt' #pride & prejudice
+chainObj.addSource '../dat/austen_complete.txt'
+#chainObj.addSource '../dat/p_and_p.txt' #pride & prejudice
+#chainObj.addSource 'http://www.gutenberg.org/cache/epub/1342/pg1342.txt' #pride & prejudice
 #chainObj.addSource 'http://www.gutenberg.org/cache/epub/31100/pg31100.txt' #austen's complete works!
 
 if DEBUG
