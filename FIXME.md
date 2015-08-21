@@ -1,2 +1,2 @@
-Reloaded chains and starters are corrupted.
-Fix handling of exclusions file.
+Things ok for now.
+
