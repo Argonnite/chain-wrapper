@@ -5,3 +5,5 @@ http
 ^#
 ^@
 ebook
+^\s*\r
+^\s*\n
