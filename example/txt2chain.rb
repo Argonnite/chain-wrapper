@@ -13,18 +13,13 @@ if ARGV.size != 3
   exit
 end
 
-ngram = ARGV[0]
-inFileFn = ARGV[1]
-outFileFn = ARGV[2]
-
 if DEBUG
-  puts ARGV[0]
-  puts ARGV[1]
-  puts ARGV[2]
+  puts ARGV[0] #ngram
+  puts ARGV[1] #input text filename
+  puts ARGV[2] #output json filename
 end
 
 chainObj = ChainWrapper.new(ARGV[0].to_i)
 chainObj.addSource ARGV[1]
-chainObj.dumpChain "#{ARGV[2]}_chain.json"
-chainObj.dumpStarters "#{ARGV[2]}_starters.json"
+chainObj.dumpChain ARGV[2]
 
