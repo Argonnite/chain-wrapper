@@ -28,6 +28,7 @@ class ChainWrapper
   class Mrkv::Chain
     attr_accessor :chain
     attr_accessor :starters
+    attr_accessor :ngram
     def add lines
       lines.each do |line|
         line.split.each_cons(@ngram + 1) do |link|
@@ -58,12 +59,13 @@ class ChainWrapper
       uri = URI(res)
       @source = Net::HTTP.get(uri.host,uri.path)
       @source.split(/[^a-zA-Z0-9\.\!\?\s]/).each do |line|
-        lines << line unless /#{@exclusions}/i =~ line
+        lines << line unless /\(@exclusions\)/i =~ line
       end
       @mrkvInst.add lines
     else #assume file source
-      File.foreach(res) { |x| lines << x }
-#TODO: skip "bad" chars
+      File.foreach(res) do |line|
+        lines << line unless /\(#{@exclusions}\)/i =~ line
+      end
       @mrkvInst.add lines
     end
   end
@@ -74,6 +76,7 @@ class ChainWrapper
 #      if DEBUG
 #        f.puts JSON.pretty_generate(@mrkvInst.chain)
 #      else
+        f.write(@mrkvInst.ngram)
         f.write(@mrkvInst.chain.to_json)
 #      end
       f.close
@@ -82,35 +85,22 @@ class ChainWrapper
   
   ### read from JSON file into internal chain structure
   def loadChain filename
-    @mrkvInst.chain = JSON.parse(File.read(filename))
+    f = File.read(filename)
+    @mrkvInst.ngram = f.match(/^\d+/)[0].to_i
+    if @mrkvInst.ngram.nil?
+      puts "ERROR: ngram absent from file."
+      exit
+    end
+    @mrkvInst.chain = JSON.parse(f.gsub(/^\d+/,''))
+    @mrkvInst.starters = @mrkvInst.chain.keys.select{|k| k =~ /^[^A-Z]?[A-Z]/} #bom:utf8
   end
   
-  ### reset internal chain structure 
+  ### reset internal chain structure s
   def clearChain
     @mrkvInst.chain = {}
-  end
-
-  ### write internal starters structure to JSON file
-  def dumpStarters filename
-    File.open(filename,"w") do |f|
-      if DEBUG
-        f.puts(JSON.pretty_generate(@mrkvInst.starters))
-      else
-        f.write(@mrkvInst.starters.to_json)
-      end
-      f.close
-    end
-  end
-  
-  ### load starters from JSON
-  def loadStarters filename
-    @mrkvInst.starters = JSON.parse(File.read(filename))
-  end
-
-  ### reset internal starters
-  def clearStarters
     @mrkvInst.starters = {}
   end
+
 
 
 #  def addExclusion singleLine
