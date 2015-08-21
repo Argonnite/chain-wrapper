@@ -1,0 +1,12 @@
+
+
+ruby2.0 txt2chain.rb 1 ../dat/preprocessed_austen.txt ../output/austen_ngram1.json
+ruby2.0 txt2chain.rb 2 ../dat/preprocessed_austen.txt ../output/austen_ngram2.json
+ruby2.0 txt2chain.rb 3 ../dat/preprocessed_austen.txt ../output/austen_ngram3.json
+ruby2.0 txt2chain.rb 4 ../dat/preprocessed_austen.txt ../output/austen_ngram4.json
+
+ruby2.0 txt2chain.rb 1 ../dat/preprocessed_joyce.txt ../output/joyce_ngram1.json
+ruby2.0 txt2chain.rb 2 ../dat/preprocessed_joyce.txt ../output/joyce_ngram2.json
+ruby2.0 txt2chain.rb 3 ../dat/preprocessed_joyce.txt ../output/joyce_ngram3.json
+ruby2.0 txt2chain.rb 4 ../dat/preprocessed_joyce.txt ../output/joyce_ngram4.json
+
